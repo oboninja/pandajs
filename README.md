@@ -409,7 +409,7 @@ router.delete('/user/delete/:id', 'User@delete')
 </ul>
 
 <br/>
-<h3>GETTING PARAMETER FROM ROUTER</h3>
+<h3 id='get-parameter'>GETTING PARAMETER FROM ROUTER</h3>
 <p>
   as we known if we want to pass parameter what we need to do is passing it into router like this <b>'/user/get/:id'</b>, to get the id you should put the Request parameter in your controlers method example like this
   <pre>
