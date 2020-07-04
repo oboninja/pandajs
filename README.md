@@ -9,7 +9,12 @@
       <li><a href='#routing'>routing</a></li>
       <li><a href='#controler'>controler</a></li>
       <li><a href='#controler-method'>controler's method</a></li>
-      <li><a href='#query'>query</li>
+      <li><a href='#query'>
+        query
+        <ul>
+          <li><a href='#get-method'>select</a></li>
+        </ul>
+      </li>
     </ul>
   </li>
 </ol>
@@ -161,7 +166,7 @@ router.delete('/user/delete/:id', 'User@delete')
   Query used for managing your data like get data, insert, update or delete
 </p>
 <ul>
-  <li>
+  <li id='get-method'>
     <h4>GET</h4>
     <table>
       <thead>
@@ -275,7 +280,7 @@ router.delete('/user/delete/:id', 'User@delete')
                     {table: table_name, fields: [column_name], identifier: table_name}
                   ], order: {}}
                 </pre>
-                identifier is what column that you want to for combine it, look at the examle below
+                identifier is what column that you want for combine between 2 tables, look at the example below
                 <pre>
                 Model.innerJoin({ param: [
                     {table: 'tb_user', fields: ["username", "image"], identifier: "userId"},
