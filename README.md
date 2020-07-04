@@ -7,15 +7,18 @@
     <ul>
       <li><a href='#database'>setting database</a></li>
       <li><a href='#routing'>routing</a></li>
+      <li><a href='#controler'>controler</a></li>
+      <li><a href='#controler-method'>controler's method</a></li>
+      <li><a href='#query'>query/li>
     </ul>
   </li>
 </ol>
 <p id='welcome'>
-Welcome to <b>pandajs</b>, pandajs is a package for create REST SERVER easly, fast, secure and free forever.
-to use this package you should use mysql as the database
+Welcome to <b>pandajs</b>, pandajs is a library for create REST SERVER easly, fast, secure and free forever.
+to use this library you should use mysql as the database
 </p>
 <h3 id='installation'>INSTALLATION</h3>
-To use this package click button clone or download above, after that unzip your file and put it
+To use this library click button clone or download above, after that unzip your file and put it
 to anywhere you want
 
 <h3 id='howtouse'>HOW TO USE</h3>
@@ -94,3 +97,145 @@ router.delete('/user/delete/:id', 'User@delete')
   .get('/user/defail/:id', 'User@detail')
   </pre>
 </p>
+<br/>
+<h3 id='controler'>CONTROLER</h3>
+<p>
+  with controler you can easly manage your data, in pandajs the controller will look like this
+  <pre>
+  const {Model} = require('../Helper')
+  class HomeModel{
+      /*
+      * this is the example of controller
+      * you can make another controller but the structure must same like this
+      * Model class must imported
+      * Your Controller must initialize, example : const Home = new HomeModel()
+      * put your method right here
+      */
+  }
+
+  const Home = new HomeModel()
+
+  module.exports = Home
+  </pre>
+  
+  if you want to make your own controler you must put it in folder app and than inside controler folder
+  <pre>
+  app
+  --controler
+  ----your_controler.js
+  </pre>
+</p>
+
+<br/>
+<h3 id='controler-method'>CONTROLER'S METHOD</h3>
+<p>
+  Inside your controler's class you can make method <b>whatever you want</b> for example <b>i create method</b> Insert for insert data to my database
+  <pre>
+  const {Model} = require('../Helper')
+  class HomeModel{
+      /*
+      * this is the example of controller
+      * you can make another controller but the structure must same like this
+      * Model class must imported
+      * Your Controller must initialize, example : const Home = new HomeModel()
+      * put your method right here
+      */
+      Insert(Request){
+        return Model.insert('tb_user', {email: Request.body.email, password: Request.body.password}, 200)
+      }
+  }
+
+  const Home = new HomeModel()
+
+  module.exports = Home
+  </pre>
+  in our routes we can call by typing this
+  <pre>
+  router.post('/user/insert', "Home@Insert")
+  </pre>
+</p>
+
+<br/>
+<h3 id='query'>QUERY</h3>
+<p>
+  Query used for managing your data like get data, insert, update or delete
+</p>
+<ul>
+  <li>
+    <h4>GET</h4>
+    <table>
+      <thead>
+        <tr>
+          <td>QUERY</td>
+          <td>DESCRIPTION</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>get(table_name, {where: {}, order: {}}, http_status_code)</td>
+          <td>
+            <ol>
+              <li>
+                <b>table_name</b>
+                <br/>
+                Name of your table
+              </li>
+              <li>
+                <b>{where: {}, order: {}}</b>
+                <br/>
+                if you want to get specific data you can fill out where parameter
+                for example i want user data where id = 0, so i can get it by typing
+                <pre>
+                {where: {userID: 1}, order: {}}
+                </pre>
+                <b>order: {}</b>
+                <br/>
+                if you want to order data you can fill out order paremeter for example i want get all user order by userID
+                <pre>
+                {where: {}, order: {userID: 'DESC'}}
+                </pre>
+                but if you don't want to get specific data or ordering data you can set it into null so the code will look like this
+                <pre>
+                get(table_name, null, 200)
+                </pre>
+              </li>
+              <li>
+                <b>http_status_code</b>
+                <br/>
+                status code used when data succesfuly processed, default is 200 which means ok
+              </li>
+            </ol>
+            get method example
+            <pre>
+            const {Model} = require('../Helper')
+            class UserControler{
+              // without get specific data and without ordering data
+              getData(){
+                return Model.get('tb_user', null, 200)
+              }
+              // with get specific data and without ordering data
+              getBy(){
+                return Model.get('tb_user', {where: {userID: 9}, order: {}}, 200)
+              }
+              // with get spesific data and with ordering data
+              getDetail(){
+                return Mode.get('tb_user', {where: {age: 20}, order: {name: 'DESC'}}, 200}
+              }
+            }
+            const User = new UserControler()
+            module.exports = User
+            </pre>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+</ul>
