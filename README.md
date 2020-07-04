@@ -11,9 +11,10 @@
       <li><a href='#controler-method'>controler's method</a></li>
       <li><a href='#query'>
         query
+        </a>
         <ul>
           <li><a href='#get-method'>select</a></li>
-          <li><a href='#post-method>insert</a></li>
+          <li><a href='#post-method'>insert</a></li>
         </ul>
       </li>
     </ul>
@@ -326,6 +327,31 @@ router.delete('/user/delete/:id', 'User@delete')
                 </pre>
               </li>
             </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li id='update-method'>
+    <h4>UPDATE</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>METHOD</th>
+          <th>DESCRIPTIONs</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>update(</b>table_name,{update: {}, identifier: {}},status<b>)</b></td>
+          <td>
+            <b>{update: {}, identifier: {}}</b>
+            <br/>
+            update parameter is what data you want to change, for example i want to change the username and age so the code will look like this
+            <pre>
+            Model.update('tb_user', {update: {username: "jerryc", age: 25}, identifier: {userID: 8}, 200)
+            </pre>
+            and identifier is what label of data you want to use, here i user userID because userID is primary key
           </td>
         </tr>
       </tbody>
