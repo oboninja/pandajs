@@ -13,6 +13,7 @@
         query
         <ul>
           <li><a href='#get-method'>select</a></li>
+          <li><a href='#post-method>insert</a></li>
         </ul>
       </li>
     </ul>
@@ -171,8 +172,8 @@ router.delete('/user/delete/:id', 'User@delete')
     <table>
       <thead>
         <tr>
-          <td>QUERY</td>
-          <td>DESCRIPTION</td>
+          <td>METHOD</td>
+          <td>DESCRIPTIONS</td>
         </tr>
       </thead>
       <tbody>
@@ -291,6 +292,40 @@ router.delete('/user/delete/:id', 'User@delete')
                 </pre>
               </li>
             </ol>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li id='post-method'>
+    <h4>INSERT</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>METHOD</th>
+          <th>DESCRIPTIONS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>insert(</b>table_name, parameter, http_status_code<b>)</b></td>
+          <td>
+            <ul>
+              <li>
+                <b>parameter</b>
+                <br/>
+                you should pass the parameter, parameter structure should be like this
+                <pre>
+                {
+                    column_name : value,
+                },
+                </pre>
+                example, i want to insert user data
+                <pre>
+                Model.insert('tb_user', {email: 'hendri@gmail.com', age: 20, sex: 'male'}, 200)
+                </pre>
+              </li>
+            </ul>
           </td>
         </tr>
       </tbody>
