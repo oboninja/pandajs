@@ -184,7 +184,7 @@ router.delete('/user/delete/:id', 'User@delete')
                 <b>{where: {}, order: {}}</b>
                 <br/>
                 if you want to get specific data you can fill out where parameter
-                for example i want user data where id = 0, so i can get it by typing
+                for example i want user data where id = 1, so i can get it by typing
                 <pre>
                 {where: {userID: 1}, order: {}}
                 </pre>
@@ -204,7 +204,18 @@ router.delete('/user/delete/:id', 'User@delete')
                 <br/>
                 status code used when data succesfuly processed, default is 200 which means ok
               </li>
+              <li>
+                <b>fields</b>
+                <br/>
+                fields is what data you want to retrieve for example i have a table and inside a table there are 4 column username, email, password, image
+                i just want to retrieve username and image so the code will look like this
+                <pre>
+                Model.get('tb_user', {where: {name: '%key%'}, order: {}}, ['username, 'image'], 200)
+                if you set fields into null, you will get all the data
+                </pre>
+              </li>
             </ol>
+            <br/>
             get method example
             <pre>
             const {Model} = require('../Helper')
@@ -228,8 +239,25 @@ router.delete('/user/delete/:id', 'User@delete')
           </td>
         </tr>
         <tr>
-          <td></td>
-          <td></td>
+          <td>getLike(table_name, {where: {}, order: {}}, fields, http_status_code)</td>
+          <td>
+            getLike method used for executing this query <i>SELECT column FROM column WHERE column LIKE '%parameter%'</i>
+            <br/>
+            <ol>
+              <li>
+                <b>table_name</b>
+                Name of your table
+              </li>
+              <li>
+                <b>{where: {}, order: {}}</b>
+                <br/>
+                where parameter can not be null you must fill it but for order you can set it into null, example
+                <pre>
+                Model.getLike('tb_user', {where: {name: `%${key}%`}, null, 200)
+                </pre>
+              </li>
+            </ol>
+          </td>
         </tr>
         <tr>
           <td></td>
