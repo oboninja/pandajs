@@ -15,6 +15,9 @@
         <ul>
           <li><a href='#get-method'>select</a></li>
           <li><a href='#post-method'>insert</a></li>
+          <li><a href='#update-method'>update</a></li>
+          <li><a href='#delete-method'>delete</a></li>
+          <li><a href='#custom-method'>custom method</a></li>
         </ul>
       </li>
     </ul>
@@ -352,6 +355,51 @@ router.delete('/user/delete/:id', 'User@delete')
             Model.update('tb_user', {update: {username: "jerryc", age: 25}, identifier: {userID: 8}, 200)
             </pre>
             and identifier is what label of data you want to use, here i user userID because userID is primary key
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li id='delete-method'>
+    <h4>DELETE</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>METHOD</th>
+          <th>DESCRIPTIONS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>delete(</b>table_name,{},http_status_code<b>)</b></td>
+          <td>
+            after table name, you should pass identifier as i explained above, example i want to delete user with id 9
+            <pre>
+            Model.delete('tb_user', {userID: 9}, 200)
+            </pre>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li id='custom-method'>
+    <h4>CUSTOM METHOD</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>METHOD</th>
+          <th>DESCRIPTIONS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>raw(sql_query, http_status_code)</td>
+          <td>
+            first parameter is sql_query, sql_query is sql code whatever sql code you want to execute for example like this
+            <pre>
+            SELECT name, age, images FROM tb_user WHERE age >= 20 ORDER BY age ASC
+            </pre>
+            second parameter is http status code default is 200
           </td>
         </tr>
       </tbody>
