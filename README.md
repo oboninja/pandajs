@@ -22,6 +22,7 @@
       </li>
     </ul>
   </li>
+  <li><a href='#get-parameter'>getting parameter from router</a></li>
 </ol>
 <p id='welcome'>
 Welcome to <b>pandajs</b>, pandajs is a library for create REST SERVER easly, fast, secure and free forever.
@@ -406,3 +407,34 @@ router.delete('/user/delete/:id', 'User@delete')
     </table>
   </li>
 </ul>
+
+<br/>
+<h3>GETTING PARAMETER FROM ROUTER</h3>
+<p>
+  as we known if we want to pass parameter what we need to do is passing it into router like this <b>'/user/get/:id'</b>, to get the id you should put the Request parameter in your controlers method example like this
+  <pre>
+    const {Model} = require('../Helper')
+    class HomeModel{
+      GetUser(Request){
+        // to get parameter you can do like this, (add Request paramter inside your controler's method this is important
+        const userId = Request.params.id
+        return Model.get('tb_user', {where: {userid: userId}, order: {}}, 200)
+      }
+    }
+    const Home = new HomeModel()
+    module.exports = Home
+  </pre>
+  and somewhile we need to get paramer from url like this <b>'/user/search/?id=2'</b>, to get parameter <b>get</b> we must put Request paramter in your controler's method, look at the example below
+  <pre>
+  const {Model} = require('../Helper')
+    class HomeModel{
+      GetUser(Request){
+        // to get parameter you can do like this, (add Request paramter inside your controler's method this is important
+        const userId = Request.query.id
+        return Model.get('tb_user', {where: {userid: userId}, order: {}}, 200)
+      }
+    }
+    const Home = new HomeModel()
+    module.exports = Home
+  </pre>
+</p>
