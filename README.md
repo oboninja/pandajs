@@ -265,7 +265,7 @@ router.delete('/user/delete/:id', 'User@delete')
           </td>
         </tr>
         <tr>
-          <td>innerJoin(param = {param : {}, order: {}}, http_status_code)</td>
+          <td>innerJoin({param : {}, order: {}}, http_status_code)</td>
           <td>
             innserJoin() used for executing this query <i>SELECT table_name.column_name FROM table_name INNER JOIN table_name ON table_name.column_name  = table_name.column_name</i>
             <br/>
