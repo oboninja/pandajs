@@ -9,7 +9,7 @@
       <li><a href='#routing'>routing</a></li>
       <li><a href='#controler'>controler</a></li>
       <li><a href='#controler-method'>controler's method</a></li>
-      <li><a href='#query'>query/li>
+      <li><a href='#query'>query</li>
     </ul>
   </li>
 </ol>
@@ -260,8 +260,33 @@ router.delete('/user/delete/:id', 'User@delete')
           </td>
         </tr>
         <tr>
-          <td></td>
-          <td></td>
+          <td>innerJoin(param = {param : {}, order: {}}, http_status_code)</td>
+          <td>
+            innserJoin() used for executing this query <i>SELECT table_name.column_name FROM table_name INNER JOIN table_name ON table_name.column_name  = table_name.column_name</i>
+            <br/>
+            <ol>
+              <li>
+                <b>param</b>
+                <br/>
+                the data that you must enter into the param must follow the following structure
+                <pre>
+                  {param:[
+                    {table: table_name, fields: [column_name], identifier: table_name},
+                    {table: table_name, fields: [column_name], identifier: table_name}
+                  ], order: {}}
+                </pre>
+                identifier is what column that you want to for combine it, look at the examle below
+                <pre>
+                Model.innerJoin({ param: [
+                    {table: 'tb_user', fields: ["username", "image"], identifier: "userId"},
+                    {table: 'tb_product', fields: ["product", "date"], identifier: "buyyerID"}
+                ]}, order: {}})
+                // from example above the sql query will look like this
+                // SELECT tb_user.username, tb_user.image, tb_product.product, tb_product.date FROM tb_user INNER JOIN tb_product ON tb_user.userId = tb_product.buyyerID
+                </pre>
+              </li>
+            </ol>
+          </td>
         </tr>
       </tbody>
     </table>
