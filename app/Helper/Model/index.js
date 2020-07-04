@@ -384,25 +384,10 @@ class ModelHelper {
                     arr_val.push(param[items])
                     if(i >= identifier_params.length - 1){
                         query += ` ${items} = ?`
-                        // set data type
-                        // if(typeof(param[items]) === "number"){
-                        //     query += ` ${items} = ${param[items]}`
-                        // }else if(typeof(param[items]) === "boolean"){
-                        //     query += ` ${items} = ${param[items]}`
-                        // }else if(typeof(param[items]) === "string"){
-                        //     query += ` ${items} = '${param[items]}'`
-                        // }
                     }else{
 
                         // set data type
                         query += ` ${items} = ? AND`
-                        // if(typeof(param[items]) === "number"){
-                        //     query += ` ${items} = ${param[items]} AND`
-                        // }else if(typeof(param[items]) === "boolean"){
-                        //     query += ` ${items} = ${param[items]} AND`
-                        // }else if(typeof(param[items]) === "string"){
-                        //     query += ` ${items} = ${param[items]} AND`
-                        // }
                     }
                 })
 
