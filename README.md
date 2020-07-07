@@ -1,4 +1,7 @@
-<img src="https://img.shields.io/badge/version-1.0.0-green.svg" alt="pandajs version" style="display: inline-block;">
+<p align='center'>
+<img src="https://img.shields.io/badge/version-1.0.0-green.svg" alt="pandajs version">
+<img src="https://img.shields.io/badge/LICENCE-MIT-blue.svg" alt="pandajs version">
+</p>
 <ol>
   <li><a href='#welcome'>welcome to pandajs</a></li>
   <li><a href='#installation'>installation</a></li>
