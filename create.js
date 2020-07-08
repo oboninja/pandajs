@@ -1,29 +1,46 @@
 const fs = require('fs')
 const argv = require('minimist')(process.argv.slice(2))
-const chalk = require('chalk')
+const random_string = require('randomstring')
+const dotenv = require('dotenv').config()
+const CreatorHelpoer = require('./app/Helper/Creator')
 
-let controller_template = `
-const {Model} = require('../Helper')
-class Controler_${argv.controller}{
+
+// create controller
+
+if(argv.controller !== null && argv.controller !== undefined){
     /*
-    * this is the example of controller
-    * you can make another controller but the structure must same like this
-    * Model class must imported
-    * Your Controller must initialize, example : const Home = new HomeModel()
-    * put your method right here
+    use this command
+
+    node create --controller Contrroller_Name
+    
+    example:
+
+    node create --controller Car
     */
+    CreatorHelpoer.CreateController(argv.controller);
 }
 
-const ${argv.controller} = new Controler_${argv.controller}()
+// create key
 
-module.exports = ${argv.controller}
-`
-if(argv.controller !== null && argv.controller !== undefined){
-    fs.writeFile(`app/Controller/${argv.controller}.js`, controller_template, (err, data) => {
-        if(err){
-            console.error(err)
-        }else{
-            console.log(chalk.green(`controller ${argv.controller} has been created !`))
-        }
-    })
+else if(argv.key !== null && argv.key !== undefined){
+    /*
+    Create key manualy use this command
+    
+    node create --key your_key
+    example: node create --key AwesomeApp
+
+    Create key automaticly use this command
+
+    node create --key --auto
+    result: will generate 14 random string
+    */
+    let result_key = ''
+    if(argv.auto){
+        const key = random_string.generate(14)
+        result_key = key
+    }else{
+        result_key = argv.key
+    }
+    CreatorHelpoer.CreateKey(result_key, dotenv.parsed.database)
+    fs.writeFile('assets/key.txt', result_key, () => {})
 }

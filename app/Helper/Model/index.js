@@ -6,7 +6,7 @@ class ModelHelper {
 
     // get methods
 
-    get(table, param = {where: {}, order: {}}, fields = [],status = 200){
+    get(table, param = {where: {}, order: {}, key: {}}, fields = [],status = 200){
 
         /*
 
