@@ -1,5 +1,5 @@
 <p align='center'>
-<img src="https://api.developeridn.com/images/media/pandajs.png" alt="pandajs">
+<img width="200" height="200" src="https://api.developeridn.com/images/media/pandajs[2].png" alt="pandajs">
 <img src="https://img.shields.io/badge/version-0.0.2-green.svg" alt="pandajs version"/>
 <img src="https://img.shields.io/badge/LICENCE-MIT-blue.svg" alt="pandajs version"/>
 </p>
