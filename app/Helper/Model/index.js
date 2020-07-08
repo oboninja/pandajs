@@ -160,7 +160,7 @@ class ModelHelper {
         })
     }
 
-    innerJoin(param = {param : {}, order: {}}, status){
+    innerJoin(param = {param : {}, order: {}}, status = 200){
         /*
         Join 2 table ( INNER JOIN )
 
