@@ -2,10 +2,10 @@
   "name": "panda",
   "version": "1.0.0",
   "description": "panda is a package for create rest server",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index"
+    "start": "nodemon app"
   },
   "repository": {
     "type": "git",
