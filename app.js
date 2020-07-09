@@ -7,5 +7,3 @@ const router = require('./src/Router')
 * example
     router.get('/all', 'Home@index')
 */
-
-router.get('/', 'Home@random');

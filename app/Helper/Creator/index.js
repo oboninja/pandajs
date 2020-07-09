@@ -1,9 +1,9 @@
 const fs = require('fs')
 const argv = require('minimist')(process.argv.slice(2))
-const random_string = require('randomstring')
 const chalk = require('chalk')
 const Db = require('../Db')
-const dotenv = require('dotenv').config()
+
+
 class CreatorHelper{
 
     // create controller
@@ -35,6 +35,12 @@ module.exports = ${name}`
 
     // create key
     CreateKey(key = '', database = ''){
+        // write key file to [assets/]
+        fs.appendFile('assets/key.txt', `${key}\n`, (err, data) =>{
+            //
+        })
+
+        
         let query = `
         CREATE TABLE ${database}.table_key(id INT NOT NUll AUTO_INCREMENT, 
                             key_value CHAR(14) NOT NULL, 
@@ -69,6 +75,7 @@ module.exports = ${name}`
                     }
                 })
             }, 3000)
+
         }catch(err){
             console.error('You must set the .env file first and run your database')
         }

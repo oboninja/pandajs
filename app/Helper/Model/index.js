@@ -1,7 +1,9 @@
 const db = require('../Db')
 const Query = require('../Query')
+const e = require('express')
 
 class ModelHelper extends Query{
+    
 
     // get methods
 
@@ -24,14 +26,35 @@ class ModelHelper extends Query{
         Model.get(tb_user, null, null, 200)
         */
        return new Promise((resolve, reject) => {
-           this.getDataHelper(table, param, fields,status, success => {
-               resolve(JSON.stringify(success))
-           }, fail => {
-               reject(JSON.stringify(fail))
-           })
-            // if(param.key !== undefined && param.key !== null && param.key.api_key.length > 0){
 
-            // }
+           // check if any api key
+
+            if(param && param.key !== null && param.key !== undefined && param.key.api_key !== null && Object.keys(param.key).length > 0 && param.key.api_key.length > 1){
+                this.CheckApiKey(param.key.api_key, success => {
+                    if(success === true){
+                        this.getDataHelper(table, param, fields,status, success2 => {
+                            resolve(JSON.stringify(success2))
+                        }, fail => {
+                            reject(JSON.stringify(fail))
+                        })
+                    }else{
+                        reject({
+                            status: 400,
+                            data: "API key doesn't match"
+                        })
+                    }
+                }, failed => {
+                    console.error(failed)
+                })
+            }
+            // without api key
+            else{
+                this.getDataHelper(table, param, fields,status, success => {
+                    resolve(JSON.stringify(success))
+                }, fail => {
+                    reject(JSON.stringify(fail))
+                })
+            }
         })
     }
 
@@ -42,68 +65,43 @@ class ModelHelper extends Query{
         SELECT * FROM table WHERE table_name LIKE '%abc%'
 
         this is the way to call this method
-        Model.getLike(table_name, {where: {table_column: value}, order: {table_name: "ASC / DESC"}, fields = [], http_status_code);
+        Model.getLike(table_name, {where: {table_column: value}, order: {table_name: "ASC / DESC"}, key: {}}, fields = [], http_status_code);
         example 
-        Model.getLike('tb_barang', {where : {namabarang: `%${key}%`}, order: {namabarang: "DESC"}}, null, 200)
+        Model.getLike('tb_users', {where : {username: `%${key}%`}, order: {namabarang: "DESC"}}, null, 200)
 
         */
         return new Promise((resolve, reject) => {
-            if(param !== null || param !== undefined && Object.keys(param.where).length > 0){
-                let val = Object.keys(param.where)[0]
-                let query = `SELECT `
-                /* 
-                check if fields is not null and not undefined and fields length > 0
-                query will add fileds that added and if there is not fields will get all
-                the data from databases
-                */
-                if(fields !== null && fields !== undefined && fields.length > 0){
-                    fields.forEach((items, i) => {
-                        if(i >= fields.length - 1){
-                            query += `${items}`
-                        }else{
-                            query += `${items}, `
-                        }
-                    })
-                    query += ` FROM ${table}`
-                }else{
-                    query += `* FROM ${table}`
-                }
-                query += ` WHERE ${val} LIKE '${param.where[val]}'`
-
-                // handling order data
-                if(param.order !== undefined && param.order !== null && Object.keys(param.order).length > 0){
-                    let order_data = Object.keys(param.order)[0]
-                    query += ` ORDER BY ${order_data} ${param.order[order_data]}`
-                }
-
-                // end of manipulating query
-
-                db.query(query, (err, data, fields) => {
-                    let res = ''
-                    if(!err){
-                        res = {
-                            status: status,
-                            data: data
+            if(param && param.key !== null && param.key !== undefined && param.key.api_key !== null && Object.keys(param.key).length > 0 && param.key.api_key.length > 1){
+                // check api key
+                this.CheckApiKey(param.key.api_key, success => {
+                    if(success === true){
+                        this.whereLikeHelper(table, param, fields, status, succes2 => {
+                            resolve(JSON.stringify(succes2))
+                        }, failed2 => {
+                            reject(JSON.stringify(failed2))
+                        });
+                    }else{
+                        let res = {
+                            status: 400,
+                            data: "Api key doesn's match"
                         }
                         resolve(JSON.stringify(res))
-                    }else{
-                        res = {
-                            status: 500,
-                            data: err
-                        }
-                        reject(JSON.stringify(res))
                     }
+                }, failed => {
+                    reject(JSON.stringify(failed))
                 })
             }else{
-                reject({
-                    status: 500,
-                    data: 'provide a parameter like %word%'
-                })
+                this.whereLikeHelper(table, param, fields, status, succes => {
+                    resolve(JSON.stringify(succes))
+                }, failed => {
+                    reject(JSON.stringify(failed))
+                });
             }
+            
         })
     }
 
-    innerJoin(param = {param : {}, order: {}}, status = 200){
+    innerJoin(param = {param : {}, order: {}, key: {api_key: ''}}, status = 200){
         /*
         Join 2 table ( INNER JOIN )
 
@@ -125,31 +123,75 @@ class ModelHelper extends Query{
         
         return new Promise((resolve, reject) => {
             let res = ''
-            if(param !== null && param !== undefined && param.param !== null && param.param !== undefined && Object.keys(param.param).length > 0){
-                let query = this.QueryJoin(param.param)
-                if(param.order !== null && param.order !== undefined && Object.keys(param.order).length > 0){
-                    let order_param = Object.keys(param.order)
-                    query  += ` ORDER BY ${order_param[0]} ${param.order[order_param]}`
-                }
-                db.query(query, (err, data, fields) => {
-                    if(err){
-                        throw err
+            if(param && param.key !== null && param.key !== undefined && param.key.api_key !== null && Object.keys(param.key).length > 0 && param.key.api_key.length > 1){
+                this.CheckApiKey(param.key.api_key, success => {
+                    if(success === true){
+
+                        if(param !== null && param !== undefined && param.param !== null && param.param !== undefined && Object.keys(param.param).length > 0){
+                            let query = this.QueryJoin(param.param)
+                            if(param.order !== null && param.order !== undefined && Object.keys(param.order).length > 0){
+                                let order_param = Object.keys(param.order)
+                                query  += ` ORDER BY ${order_param[0]} ${param.order[order_param]}`
+                            }
+                            db.query(query, (err, data, fields) => {
+                                if(err){
+                                    throw err
+                                }else{
+                                    res = {
+                                        status: status,
+                                        data: data,
+                                    }
+                                    resolve(JSON.stringify(res))
+                                }
+                            })
+            
+            
+                        }else{
+                            res = {
+                                status: 500,
+                                data: 'provide parameters'
+                            }
+                            reject(JSON.stringify(res))
+                        }
+
                     }else{
                         res = {
-                            status: status,
-                            data: data,
+                            status: 400,
+                            message: "API key doesn't match"
                         }
-                        resolve(JSON.stringify(res))
+                        reject(res)
                     }
+                }, failed => {
+                    reject(JSON.stringify(failed))
                 })
-
-
             }else{
-                res = {
-                    status: 500,
-                    data: 'provide parameters'
+                
+                if(param !== null && param !== undefined && param.param !== null && param.param !== undefined && Object.keys(param.param).length > 0){
+                    let query = this.QueryJoin(param.param)
+                    if(param.order !== null && param.order !== undefined && Object.keys(param.order).length > 0){
+                        let order_param = Object.keys(param.order)
+                        query  += ` ORDER BY ${order_param[0]} ${param.order[order_param]}`
+                    }
+                    db.query(query, (err, data, fields) => {
+                        if(err){
+                            throw err
+                        }else{
+                            res = {
+                                status: status,
+                                data: data,
+                            }
+                            resolve(JSON.stringify(res))
+                        }
+                    })
+    
+    
+                }else{
+                    res = {
+                        status: 500,
+                        data: 'provide parameters'
+                    }
+                    reject(JSON.stringify(res))
                 }
-                reject(JSON.stringify(res))
             }
         })
     }
@@ -173,13 +215,13 @@ class ModelHelper extends Query{
 
     // post method
 
-    insert(table = null, param = null, status){
+    insert(table = null, param = null, key = {api_key: ''}, status){
         /* 
         this method is used for insert data to the database;
         1. table is table name that you want to use
         2. params is column name of your table if you insert data using this method
             you should follow this rules
-            (table_name, {colum1: value1, column2: value2}, 200)
+            (table_name, {colum1: value1, column2: value2},api_key, 200)
         3. status is http status code when the query succesfuly 
             excecuted default is 200 which means is ok
 
@@ -187,39 +229,46 @@ class ModelHelper extends Query{
 
         Model.insert(table_name, {
             column_name : value,
-        }, 200)
+        },{api_key : ''} 200)
         */
         return new Promise((resolve, reject) => {
             let res = ''
-            if(param !== null && param !== undefined){
-                let query = this.CreateQuery(table, param)
-                let arr_query = []
-                let query_obj = Object.keys(param)
-                query_obj.forEach((items, i) => {
-                    arr_query.push(param[items])
-                })
-                // quer database
-                db.query(query,arr_query,(err, data, fields) => {
-                    if(err){
-                        throw err
+            if(key !== null && Object.keys(key).length > 0 && key.api_key.length > 0){
+                this.CheckApiKey(key.api_key, success => {
+                    if(success === true){
+                        this.PostHelper(table, param, status, success2 => {
+                            resolve(JSON.stringify(success2))
+                        }, failed2 => {
+                            reject(failed2)
+                        })
                     }else{
-                        res = {status: status, data}
-                        resolve(JSON.stringify(res))
+                        res = {
+                            status: 400,
+                            data: "API key doesn't match"
+                        }
+                        reject(res)
                     }
+                }, failed => {
+                    res = {
+                        status: 400,
+                        data: failed,
+                    }
+                    reject(res)
                 })
             }else{
-                res = {
-                    status: 500,
-                    data: { message: 'Provide a table name and value'}
-                }
-                reject(res)
+                this.PostHelper(table, param, status, success => {
+                    resolve(JSON.stringify(success))
+                }, failed => {
+                    reject(failed)
+                })
             }
+            
         })
     }
 
     // update method
 
-    update(table = null, param = {update: {}, identifier: {}}, status = 200){
+    update(table = null, param = {update: {}, identifier: {}, key: {api_key: ''}}, status = 200){
         /*
         update data in database
 
@@ -230,6 +279,9 @@ class ModelHelper extends Query{
             }, 
             identifier: {
                 column_name: value
+            },
+            key: {
+                api_key: ''
             }
         }, http_status_code (default is 200 which means ok no problem));
 
@@ -240,155 +292,122 @@ class ModelHelper extends Query{
             }, 
             identifier: {
                 age: 21
+            },
+            key: {
+                api_key: ''
             }
         }, 200);
 
         */
         return new Promise((resolve, reject) => {
             let res = ''
-            if(param !== null && param !== undefined){
-                let update_params = Object.keys(param.update)
-                let identifier_params = Object.keys(param.identifier)
-
-                // parameter can't be null or undefined
-
-                if(param.update !== null && param.identifier !== null && param.update !== undefined && param.identifier !== undefined && update_params.length > 0 && identifier_params.length > 0){
-                    let query = `UPDATE ${table} SET`
-                    let arr_val = []
-                    // set column name and the value
-                    update_params.forEach((items, i) => {
-                        arr_val.push(param.update[items])
-                        if(i >= update_params.length - 1){
-                            query += ` ${items} = ?`
-                        }else{
-                            query += ` ${items} = ?, `
-                        }
-                    })
-
-                    // handling idenfier more than 1
-
-                    identifier_params.forEach((items, i) => {
-                        arr_val.push(param.identifier[items])
-                        if(i >= identifier_params.length - 1){
-                            query += ` WHERE ${items} = ?`
-                        }else{
-                            query += ` WHERE ${items} ?, `
-                        }
-                    })
-
-                    // EXECUTION OF QUERY
-                    db.query(query,arr_val,(err, data, fields) => {
+            if(param && param.key !== null && param.key !== undefined && param.key.api_key !== null && Object.keys(param.key).length > 0 && param.key.api_key.length > 1){
+                this.CheckApiKey(param.key.api_key, success => {
+                    if(success === true){
+                        this.UpadateHelper(table, param, status, berhasil => {
+                            resolve(JSON.stringify(berhasil))
+                        }, failed2 => {
+                            reject(failed2)
+                        })
+                    }else{
                         res = {
-                            status: status,
-                            data: data
+                            status: 400,
+                            data: "API key doesn't match"
                         }
-    
-                        resolve(JSON.stringify(res))
-                    })
-
-                }else{
-                    res = {
-                        status: 500,
-                        data: "Provide a parameter"
+                        reject(res)
                     }
-                    reject(JSON.stringify(res))
-                }
+                })
             }else{
-                res = {
-                    status: 500,
-                    data: "Provide a parameter"
-                }
-                reject(reject(res))
+                this.UpadateHelper(table, param, status,success => {
+                    resolve(JSON.stringify(success))
+                }, err => {
+                    reject(err)
+                })
             }
         })
     }
 
-    delete(table = null, param = {}, status = 200){
+    delete(table = null, param = {}, key = {api_key: ''}, status = 200){
 
         /*
         structure :
 
-        Model.delete(table_name, {column_name: value}, http_status_code (default is 200))
+        Model.delete(table_name, {column_name: value},{api_key : ''}, http_status_code (default is 200))
 
         example :
 
-        Model.delete('tb_user', {userID: 1}, 200);
+        Model.delete('tb_user', {userID: 1},{api_key: 'aaa'}, 200);
         */
         return new Promise((resolve,reject) => {
-            if(param !== null && param !== undefined && Object.keys(param).length > 0){
-                let identifier_params = Object.keys(param)
-                let query = `DELETE FROM ${table} WHERE`
-                let res = ''
-                let arr_val = []
-    
-                // SET IDENTIFIER
-    
-                identifier_params.forEach((items, i) => {
-                    arr_val.push(param[items])
-                    if(i >= identifier_params.length - 1){
-                        query += ` ${items} = ?`
-                    }else{
-
-                        // set data type
-                        query += ` ${items} = ? AND`
-                    }
-                })
-
-                // HANDLING QUERY
-                db.query(query, arr_val, (err, data, fields) => {
-                    if(err){
-                        res = {
-                            status: 500,
-                            data: err
-                        }
-                        reject(JSON.stringify(res))
+            let res = ''
+            if(key !== null && key.api_key !== null && key.api_key.length > 0){
+                this.CheckApiKey(key.api_key, success => {
+                    if(success === true){
+                        this.DeleteHelper(table, param, status, success2 => {
+                            resolve(JSON.stringify(success2))
+                        }, failed2 => {
+                            reject(failed2)
+                        })
                     }else{
                         res = {
-                            status: status,
-                            data: data,
+                            status: 400,
+                            data: "API key doesn't match",
                         }
-                        resolve(JSON.stringify(res))
+                        reject(res)
                     }
+                }, failed => {
+                    res = {
+                        status: 400,
+                        data: failed
+                    }
+                    reject(res)
                 })
-
             }else{
-                res = {
-                    status: 500,
-                    data: "Parameter can not be null",
-                }
-
-                reject(JSON.stringify(res))
+                this.DeleteHelper(table, param, status, success => {
+                    resolve(JSON.stringify(success))
+                }, failed => {
+                    reject(failed)
+                })
             }
-            //
+            
         })
     }
 
-    raw(query, status){
+    raw(query, key = {api_key: ''}, status){
         /* 
         you can passing query whatever you want using this method
         example : 
         SELECT name, image FROM user WHERE age >= 20
         and use in controller like this:
-        Model.raw(`SELECT * FROM tb_kategori WHERE kodekat <= 7`, 202)
+        Model.raw(`SELECT name, image FROM tuser WHERE age >= 30`, {api_key: ''}, 202)
         */
         return new Promise((resolve, reject) => {
             let res = ''
-            db.query(query, (err, data, fields) => {
-                if(err){
-                    res = {
-                        status: 500,
-                        data: data,
+            if(key !== null && key.api_key !== null && Object.keys(key).length > 0){
+                this.CheckApiKey(key.api_key, success => {
+                    if(success === true){
+                        this.RawHelper(query, status, succes2 => {
+                            resolve(JSON.stringify(succes2))
+                        }, failed => {
+                            reject(failed)
+                        })
+                    }else{
+                        res = {
+                            status: 400,
+                            data: "API key doesn't match"
+                        }
+                        reject(res)
                     }
-                    reject(JSON.stringify(res))
-                }else{
-                    res = {
-                        status: status,
-                        data: data,
+                })
+            }else{
+                this.RawHelper(query, status, success => {
+                    if(res){
+                        resolve(JSON.stringify(success))
                     }
-
-                    resolve(JSON.stringify(res))
-                }
-            })
+                }, failed => {
+                    reject(failed)
+                })
+            }
         })
     }
 }
